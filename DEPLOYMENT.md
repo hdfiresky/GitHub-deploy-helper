@@ -11,6 +11,7 @@ This guide details an automated, zero-downtime deployment setup for this web app
 6. [Deployment Script (`/usr/local/bin/deploy.sh`)](#6-deployment-script-usrlocalbindeploysh)
 7. [Nginx Configuration](#7-nginx-configuration)
 8. [Triggering the First Deployment](#8-triggering-the-first-deployment)
+9. [Performing a Manual Rollback](#9-performing-a-manual-rollback)
 
 ---
 
@@ -203,8 +204,8 @@ APP_ROOT="/var/www/problembuddy"
 RELEASES_DIR="/var/www/releases"
 # The deployment user. The script will ensure files are owned by this user.
 DEPLOY_USER="deployer"
-# Number of old releases to keep.
-RELEASES_TO_KEEP=5
+# Number of old releases to keep. (Disabled)
+# RELEASES_TO_KEEP=5
 # --- END CONFIGURATION ---
 
 # --- VALIDATION ---
@@ -244,10 +245,11 @@ mkdir -p "$(dirname "$APP_PATH")"
 echo "-> Activating new release by updating symbolic link..."
 ln -sfn "$RELEASE_PATH" "$APP_PATH"
 
-# 6. Clean up old releases
-echo "-> Cleaning up old releases (keeping last $RELEASES_TO_KEEP)..."
-# List all release dirs, sort by name (timestamp), get the ones to delete, and remove them.
-ls -1dt "$RELEASES_DIR"/*/ | tail -n +$(($RELEASES_TO_KEEP + 1)) | xargs -r rm -rf || true
+# 6. Clean up old releases (DISABLED)
+# Old releases are intentionally kept to allow for easy manual rollbacks.
+# If you need to clean up old releases, you can do so manually or re-enable this section.
+# echo "-> Cleaning up old releases (keeping last $RELEASES_TO_KEEP)..."
+# ls -1dt "$RELEASES_DIR"/*/ | tail -n +$(($RELEASES_TO_KEEP + 1)) | xargs -r rm -rf || true
 
 echo "✅ Deployment successful! Application is now live."
 # --- END SCRIPT LOGIC ---
@@ -315,3 +317,39 @@ git push origin main
 ```
 
 Go to the "Actions" tab in your GitHub repository to monitor the workflow. Your application will be live at `http://your_domain_or_ip/problem-buddy-app/`.
+
+---
+
+## 9. Performing a Manual Rollback
+
+The symbolic link strategy makes rollbacks instantaneous and trivial. Because all previous releases are kept, you can switch back to any of them at any time.
+
+### Step 9.1: List Available Releases
+
+SSH into your server and list the contents of the releases directory to see all available deployment timestamps.
+
+```bash
+ls -l /var/www/releases
+```
+
+You will see an output like this, where each directory is a previous release:
+```
+total 12
+drwxr-xr-x 2 deployer deployer 4096 Jul 20 10:30 20240720103000
+drwxr-xr-x 2 deployer deployer 4096 Jul 20 10:45 20240720104500
+drwxr-xr-x 2 deployer deployer 4096 Jul 20 11:00 20240720110000
+```
+
+### Step 9.2: Update the Symbolic Link
+
+Identify the timestamp of the release you want to roll back to. Then, use `ln -sfn` to atomically update the symbolic link to point to that old release directory.
+
+For example, to roll back to the `20240720104500` release:
+
+```bash
+# The target path is /var/www/problembuddy/problem-buddy-app
+# The source path is the old release you want to activate
+sudo ln -sfn /var/www/releases/20240720104500 /var/www/problembuddy/problem-buddy-app
+```
+
+The rollback is instant. Users will immediately be served the files from the older release. No server restart is needed.
