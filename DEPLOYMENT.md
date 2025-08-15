@@ -359,10 +359,13 @@ The rollback is instant. Users will immediately be served the files from the old
 
 ## 10. Manual Deployment Alternative
 
-For scenarios where you need to deploy manually, several guides are available depending on your needs.
+For scenarios where you need to deploy manually from a local machine, several guides are available depending on your needs.
+
+### [➡️ Universal Deployment Script (UNIVERSAL_DEPLOYMENT_SCRIPT.md)](UNIVERSAL_DEPLOYMENT_SCRIPT.md)
+**Advanced:** Provides a powerful script for Windows and macOS/Linux that you can add to your system's PATH and run from anywhere to deploy any pre-built project.
 
 ### [➡️ One-Click Local Deployment Guide (AUTOMATED_LOCAL_DEPLOYMENT.md)](AUTOMATED_LOCAL_DEPLOYMENT.md)
-**Recommended for local deploys.** This guide provides scripts for Windows, macOS, and Linux that automate the entire build, upload, and deployment process with a single command from your local machine.
+**Recommended for most local deploys.** A simple script that lives inside your project for fast, automated deployments.
 
 ### [➡️ Step-by-Step Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
 This guide provides the original, step-by-step process for deploying a pre-packaged `.zip` file. This is useful for understanding the process or if you cannot use the automated scripts.

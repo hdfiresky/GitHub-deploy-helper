@@ -88,7 +88,7 @@ const GuideView: FC<{ onGoBack: () => void; guidePath: string }> = ({ onGoBack, 
 };
 
 // Component for the main landing page view.
-const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onShowAutomatedLocalGuide: () => void; }> = ({ onShowGuide, onShowLocalGuide, onShowAutomatedLocalGuide }) => (
+const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onShowAutomatedLocalGuide: () => void; onShowUniversalGuide: () => void; }> = ({ onShowGuide, onShowLocalGuide, onShowAutomatedLocalGuide, onShowUniversalGuide }) => (
   <>
     <header className="text-center mb-8">
       <h1 className="text-4xl font-bold text-cyan-400">Problem Buddy Deployment Demo</h1>
@@ -108,18 +108,32 @@ const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onSh
           View Automated CI/CD Guide
         </button>
       </div>
-
-      <div className="bg-green-900/50 p-6 rounded-lg border border-green-700 mb-8 text-center">
-        <h2 className="text-2xl font-semibold text-green-300 mb-3">One-Click Local Deployment</h2>
-        <p className="text-gray-300 mb-4">
-          The easiest way to deploy from your local machine. This guide provides scripts that automate the entire process.
-        </p>
-        <button
-          onClick={onShowAutomatedLocalGuide}
-          className="inline-block bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-lg"
-        >
-          View One-Click Guide
-        </button>
+      
+      <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="bg-green-900/50 p-6 rounded-lg border border-green-700 text-center flex flex-col">
+          <h2 className="text-2xl font-semibold text-green-300 mb-3">One-Click Local Deployment</h2>
+          <p className="text-gray-300 mb-4 flex-grow">
+            A simple script inside your project for fast, automated deployments from your local machine.
+          </p>
+          <button
+            onClick={onShowAutomatedLocalGuide}
+            className="inline-block bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-lg mt-auto"
+          >
+            View Project Script Guide
+          </button>
+        </div>
+        <div className="bg-purple-900/50 p-6 rounded-lg border border-purple-700 text-center flex flex-col">
+          <h2 className="text-2xl font-semibold text-purple-300 mb-3">Universal Deployment Script</h2>
+          <p className="text-gray-300 mb-4 flex-grow">
+            An advanced script you can run from anywhere to deploy any pre-built project.
+          </p>
+          <button
+            onClick={onShowUniversalGuide}
+            className="inline-block bg-purple-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-purple-600 transition-colors duration-300 shadow-lg mt-auto"
+          >
+            View Universal Script Guide
+          </button>
+        </div>
       </div>
 
       <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-500 text-center">
@@ -168,12 +182,13 @@ const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onSh
 );
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'guide' | 'local_guide' | 'automated_local_guide'>('home');
+  const [view, setView] = useState<'home' | 'guide' | 'local_guide' | 'automated_local_guide' | 'universal_guide'>('home');
 
   const GuideMap = {
     guide: 'DEPLOYMENT.md',
     local_guide: 'LOCAL_DEPLOYMENT.md',
     automated_local_guide: 'AUTOMATED_LOCAL_DEPLOYMENT.md',
+    universal_guide: 'UNIVERSAL_DEPLOYMENT_SCRIPT.md',
   };
 
   return (
@@ -184,6 +199,7 @@ const App: React.FC = () => {
             onShowGuide={() => setView('guide')} 
             onShowLocalGuide={() => setView('local_guide')}
             onShowAutomatedLocalGuide={() => setView('automated_local_guide')}
+            onShowUniversalGuide={() => setView('universal_guide')}
           />
         ) : (
           <GuideView onGoBack={() => setView('home')} guidePath={`${import.meta.env.BASE_URL}${GuideMap[view]}`} />

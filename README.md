@@ -56,15 +56,19 @@ To run this application on your local machine:
 
 ## 🌐 Deployment
 
-The heart of this project is its deployment process. Three complete, production-ready guides are available to set up your own server and CI/CD pipeline from scratch.
+The heart of this project is its deployment process. Several complete, production-ready guides are available to set up your own server and CI/CD pipeline from scratch.
 
 ### [➡️ View the Full CI/CD Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
 
 This detailed guide covers the primary, automated deployment strategy using GitHub Actions. It is the recommended approach for production environments.
 
+### [➡️ View the Universal Deployment Script Guide (UNIVERSAL_DEPLOYMENT_SCRIPT.md)](UNIVERSAL_DEPLOYMENT_SCRIPT.md)
+
+**Advanced:** Provides a powerful script for Windows and macOS/Linux that you can add to your system's PATH and run from anywhere to deploy any pre-built project.
+
 ### [➡️ View the One-Click Local Deployment Guide (AUTOMATED_LOCAL_DEPLOYMENT.md)](AUTOMATED_LOCAL_DEPLOYMENT.md)
 
-**The easiest way to deploy from your local machine.** This guide provides scripts for Windows, macOS, and Linux that automate the entire build, upload, and deployment process into a single command.
+A simple script that lives inside your project for fast, automated deployments from your local machine.
 
 ### [➡️ View the Step-by-Step Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
 
