@@ -2,16 +2,26 @@ import React, { useState, useEffect, FC, PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { MARKDOWN_BASE_URL } from './config';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // A custom renderer for code blocks to add styling and a copy button.
-const CodeRenderer: FC<PropsWithChildren<{ className?: string; inline?: boolean }>> = ({ className, children, inline }) => {
+const CodeRenderer: FC<PropsWithChildren<{ className?: string }>> = ({ className, children }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const match = /language-(\w+)/.exec(className || '');
 
-  if (inline) {
+  // Heuristic to determine if the code is a block.
+  // It's a block if it has a language class or if its content contains a newline.
+  const isBlock =
+    match ||
+    (Array.isArray(children)
+      ? children.some(child => typeof child === 'string' && child.includes('\n'))
+      : typeof children === 'string' && children.includes('\n'));
+
+  if (!isBlock) {
     return <code className="bg-gray-700 text-yellow-300 px-1.5 py-0.5 rounded-md font-mono text-sm">{children}</code>;
   }
 
-  const match = /language-(\w+)/.exec(className || '');
   const lang = match ? match[1] : 'text';
   const codeString = String(children).replace(/\n$/, '');
 
@@ -23,8 +33,8 @@ const CodeRenderer: FC<PropsWithChildren<{ className?: string; inline?: boolean 
   };
 
   return (
-    <div className="bg-gray-900/70 rounded-lg my-4 relative border border-gray-700 font-mono">
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-700/50 rounded-t-lg text-xs">
+    <div className="bg-gray-900/70 rounded-lg my-4 relative border border-gray-700 font-mono overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-700/50 text-xs">
         <span className="text-gray-400 uppercase">{lang}</span>
         <button
           onClick={handleCopy}
@@ -34,9 +44,23 @@ const CodeRenderer: FC<PropsWithChildren<{ className?: string; inline?: boolean 
           {isCopied ? '✅ Copied!' : '📋 Copy'}
         </button>
       </div>
-      <pre className="p-4 overflow-x-auto text-sm">
-        <code>{children}</code>
-      </pre>
+      <SyntaxHighlighter
+        language={lang}
+        style={vscDarkPlus}
+        customStyle={{
+          margin: 0,
+          padding: '1rem',
+          backgroundColor: 'transparent',
+          fontSize: '0.875rem',
+        }}
+        codeTagProps={{
+          style: {
+            fontFamily: 'inherit',
+          },
+        }}
+      >
+        {codeString}
+      </SyntaxHighlighter>
     </div>
   );
 };
@@ -81,6 +105,7 @@ const GuideView: FC<{ onGoBack: () => void; guidePath: string }> = ({ onGoBack, 
           ol: ({ node, ...props }) => <ol className="list-decimal list-inside space-y-2 mb-4 pl-4" {...props} />,
           li: ({ node, ...props }) => <li className="text-gray-300" {...props} />,
           code: CodeRenderer,
+          pre: ({ children }) => <>{children}</>,
           blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-gray-500 pl-4 italic text-gray-400 my-4" {...props} />,
         }}
       />
