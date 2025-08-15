@@ -156,11 +156,11 @@ sudo chown root:root /usr/local/bin/local_deploy.sh
 
 ## 5. Running the Deployment
 
-With `temp.zip` uploaded and the script in place, you can now run the deployment.
+With `temp.zip` uploaded and the script in place, you can now run the deployment. Because the script is in `/usr/local/bin`, a standard location for executables, you don't need to type the full path.
 
 ```bash
 # Run the script with sudo
-sudo /usr/local/bin/local_deploy.sh
+sudo local_deploy.sh
 
 # The script will prompt you for the application name.
 # For this project, you would enter: problem-buddy-app
@@ -168,3 +168,32 @@ Enter the application name for the symlink (e.g., problem-buddy-app): problem-bu
 ```
 
 The script will handle the rest. Your application will be deployed and live, and the `temp.zip` file will be removed.
+
+---
+
+## 6. Simplifying the Command (Optional)
+
+To make running the deployment even easier, you can create a shell alias. This allows you to type a short command like `local_deploy` instead of `sudo local_deploy.sh`.
+
+### Create a Bash Alias
+
+1.  Open your Bash configuration file. This is usually `~/.bashrc` or `~/.bash_aliases`.
+    ```bash
+    nano ~/.bashrc
+    ```
+
+2.  Add the following line to the end of the file:
+    ```bash
+    alias local_deploy='sudo /usr/local/bin/local_deploy.sh'
+    ```
+
+3.  Save the file (`Ctrl+X`, `Y`, `Enter`) and apply the changes to your current shell session:
+    ```bash
+    source ~/.bashrc
+    ```
+
+Now, you can deploy simply by running:
+```bash
+local_deploy
+```
+The alias will be available in all future terminal sessions.
