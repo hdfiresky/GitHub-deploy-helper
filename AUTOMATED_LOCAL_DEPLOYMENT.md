@@ -104,3 +104,36 @@ endlocal
     ```
 
 The script will now perform all the necessary steps automatically. If your SSH key is not passphrase-protected and your user has passwordless `sudo` access on the server for the remote script, the entire process should complete without any prompts.
+
+---
+
+## 4. Optional: Making the Script Globally Accessible
+
+To run the `deploy-local.bat` script from any project folder on your system without typing the full path, you can add its location to your Windows PATH environment variable. This makes it feel like a built-in command.
+
+**Note:** For this to work best, you should save the `deploy-local.bat` script in a central, permanent location outside of any specific project folder (e.g., `C:\Users\YourUser\Scripts`).
+
+### Steps to Add to PATH:
+
+1.  **Open Environment Variables:**
+    -   Press the `Windows Key`, type `env`, and select **"Edit the system environment variables"**.
+    -   In the System Properties window that opens, click the **"Environment Variables..."** button.
+
+2.  **Edit the Path Variable:**
+    -   In the top section ("User variables for [your_user]"), find the `Path` variable and double-click it (or select it and click "Edit...").
+
+3.  **Add the Script's Directory:**
+    -   Click **"New"** and paste the full path to the directory where you saved `deploy-local.bat` (e.g., `C:\Users\YourUser\Scripts`).
+    -   Click **"OK"** on all open windows to save the changes.
+
+4.  **Restart Your Command Prompt:** You must open a **new** Command Prompt or PowerShell window for the changes to take effect.
+
+### How to Run it Globally:
+
+Now, you can navigate to *any* of your project folders, build your project, and then run the deployment command directly:
+
+```cmd
+C:\path\to\another-project> npm run build
+
+C:\path\to\another-project> deploy-local.bat another-app-name
+```
