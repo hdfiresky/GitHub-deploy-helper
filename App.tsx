@@ -41,15 +41,10 @@ const CodeRenderer: FC<PropsWithChildren<{ className?: string; inline?: boolean 
 };
 
 // Component to display the formatted deployment guide.
-const GuideView: FC<{ onGoBack: () => void }> = ({ onGoBack }) => {
+const GuideView: FC<{ onGoBack: () => void; guidePath: string }> = ({ onGoBack, guidePath }) => {
   const [guideContent, setGuideContent] = useState('Loading guide...');
 
   useEffect(() => {
-    // The DEPLOYMENT.md file is treated as a static asset by Vite.
-    // We construct the path respecting the 'base' config in vite.config.ts
-    // by using import.meta.env.BASE_URL.
-    const guidePath = `${import.meta.env.BASE_URL}DEPLOYMENT.md`;
-    
     fetch(guidePath)
       .then((response) => {
         if (!response.ok) {
@@ -59,10 +54,10 @@ const GuideView: FC<{ onGoBack: () => void }> = ({ onGoBack }) => {
       })
       .then((text) => setGuideContent(text))
       .catch((error) => {
-        console.error('Failed to fetch deployment guide:', error);
+        console.error(`Failed to fetch deployment guide from ${guidePath}:`, error);
         setGuideContent('### Error: Could not load deployment guide.\n\nPlease check the browser console for more details.');
       });
-  }, []);
+  }, [guidePath]);
   
   return (
     <div>
@@ -93,7 +88,7 @@ const GuideView: FC<{ onGoBack: () => void }> = ({ onGoBack }) => {
 };
 
 // Component for the main landing page view.
-const HomeView: FC<{ onShowGuide: () => void }> = ({ onShowGuide }) => (
+const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; }> = ({ onShowGuide, onShowLocalGuide }) => (
   <>
     <header className="text-center mb-8">
       <h1 className="text-4xl font-bold text-cyan-400">Problem Buddy Deployment Demo</h1>
@@ -102,19 +97,32 @@ const HomeView: FC<{ onShowGuide: () => void }> = ({ onShowGuide }) => (
 
     <main>
       <div className="bg-cyan-900/50 p-6 rounded-lg border border-cyan-700 mb-8 text-center">
-        <h2 className="text-2xl font-semibold text-cyan-300 mb-3">Deployment Instructions</h2>
+        <h2 className="text-2xl font-semibold text-cyan-300 mb-3">Automated CI/CD Deployment</h2>
         <p className="text-gray-300 mb-4">
-          Ready to deploy? View our step-by-step guide for a seamless setup on your own server.
+          Ready to deploy? View our step-by-step guide for a seamless, automated setup on your own server.
         </p>
         <button
           onClick={onShowGuide}
           className="inline-block bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-cyan-600 transition-colors duration-300 shadow-lg"
         >
-          View Deployment Guide
+          View Automated Guide
         </button>
       </div>
 
-      <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-600">
+      <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-500 text-center">
+        <h2 className="text-2xl font-semibold text-yellow-300 mb-3">Manual Deployment</h2>
+        <p className="text-gray-300 mb-4">
+          Need to deploy without CI/CD? Follow the guide for manual deployments using a pre-built package.
+        </p>
+        <button
+          onClick={onShowLocalGuide}
+          className="inline-block bg-yellow-500 text-black font-bold py-2 px-6 rounded-lg hover:bg-yellow-600 transition-colors duration-300 shadow-lg"
+        >
+          View Manual Guide
+        </button>
+      </div>
+
+      <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-600 mt-8">
         <h2 className="text-2xl font-semibold text-green-400 mb-4">Deployment Strategy Overview</h2>
         <p className="text-gray-300 mb-4">
           This application is configured to be deployed automatically using a GitHub Action. The process ensures zero-downtime deployments through a symbolic link strategy.
@@ -147,15 +155,17 @@ const HomeView: FC<{ onShowGuide: () => void }> = ({ onShowGuide }) => (
 );
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'guide'>('home');
+  const [view, setView] = useState<'home' | 'guide' | 'local_guide'>('home');
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center p-4 font-sans">
       <div className="max-w-4xl w-full bg-gray-800 rounded-lg shadow-xl p-8 my-8 border border-gray-700">
         {view === 'home' ? (
-          <HomeView onShowGuide={() => setView('guide')} />
+          <HomeView onShowGuide={() => setView('guide')} onShowLocalGuide={() => setView('local_guide')} />
+        ) : view === 'guide' ? (
+          <GuideView onGoBack={() => setView('home')} guidePath={`${import.meta.env.BASE_URL}DEPLOYMENT.md`} />
         ) : (
-          <GuideView onGoBack={() => setView('home')} />
+          <GuideView onGoBack={() => setView('home')} guidePath={`${import.meta.env.BASE_URL}LOCAL_DEPLOYMENT.md`} />
         )}
       </div>
     </div>

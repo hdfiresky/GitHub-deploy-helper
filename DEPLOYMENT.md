@@ -12,6 +12,7 @@ This guide details an automated, zero-downtime deployment setup for this web app
 7. [Nginx Configuration](#7-nginx-configuration)
 8. [Triggering the First Deployment](#8-triggering-the-first-deployment)
 9. [Performing a Manual Rollback](#9-performing-a-manual-rollback)
+10. [Manual Deployment Alternative](#10-manual-deployment-alternative)
 
 ---
 
@@ -226,13 +227,13 @@ APP_PATH="$APP_ROOT/$APP_NAME"
 
 echo "🚀 Starting deployment..."
 
-# 1. Create a new release directory
-echo "-> Creating new release directory: $RELEASE_PATH"
-mkdir -p "$RELEASE_PATH"
+# 1. Create a new release directory and the 'app' subdirectory
+echo "-> Creating new release directory: $RELEASE_PATH/app"
+mkdir -p "$RELEASE_PATH/app"
 
-# 2. Copy application files from the temporary source to the new release directory
-echo "-> Copying application files to new release directory..."
-rsync -a "$SOURCE_DIR/" "$RELEASE_PATH/"
+# 2. Copy application files from the temporary source to the new 'app' subdirectory
+echo "-> Copying application files to new release 'app' subdirectory..."
+rsync -a "$SOURCE_DIR/" "$RELEASE_PATH/app/"
 
 # 3. Ensure correct ownership of the new release files
 echo "-> Setting ownership for $DEPLOY_USER user..."
@@ -241,9 +242,9 @@ chown -R "$DEPLOY_USER":"$DEPLOY_USER" "$RELEASE_PATH"
 # 4. Create the application's parent directory if it doesn't exist
 mkdir -p "$(dirname "$APP_PATH")"
 
-# 5. Atomically update the symbolic link to point to the new release
+# 5. Atomically update the symbolic link to point to the new release's 'app' subdirectory
 echo "-> Activating new release by updating symbolic link..."
-ln -sfn "$RELEASE_PATH" "$APP_PATH"
+ln -sfn "$RELEASE_PATH/app" "$APP_PATH"
 
 # 6. Clean up old releases (DISABLED)
 # Old releases are intentionally kept to allow for easy manual rollbacks.
@@ -335,21 +336,29 @@ ls -l /var/www/releases
 You will see an output like this, where each directory is a previous release:
 ```
 total 12
-drwxr-xr-x 2 deployer deployer 4096 Jul 20 10:30 20240720103000
-drwxr-xr-x 2 deployer deployer 4096 Jul 20 10:45 20240720104500
-drwxr-xr-x 2 deployer deployer 4096 Jul 20 11:00 20240720110000
+drwxr-xr-x 3 deployer deployer 4096 Jul 20 10:30 20240720103000
+drwxr-xr-x 3 deployer deployer 4096 Jul 20 10:45 20240720104500
+drwxr-xr-x 3 deployer deployer 4096 Jul 20 11:00 20240720110000
 ```
 
 ### Step 9.2: Update the Symbolic Link
 
-Identify the timestamp of the release you want to roll back to. Then, use `ln -sfn` to atomically update the symbolic link to point to that old release directory.
+Identify the timestamp of the release you want to roll back to. Then, use `ln -sfn` to atomically update the symbolic link to point to that old release directory's `app` subfolder.
 
 For example, to roll back to the `20240720104500` release:
 
 ```bash
 # The target path is /var/www/problembuddy/problem-buddy-app
-# The source path is the old release you want to activate
-sudo ln -sfn /var/www/releases/20240720104500 /var/www/problembuddy/problem-buddy-app
+# The source path is the 'app' subfolder of the old release you want to activate
+sudo ln -sfn /var/www/releases/20240720104500/app /var/www/problembuddy/problem-buddy-app
 ```
 
 The rollback is instant. Users will immediately be served the files from the older release. No server restart is needed.
+
+---
+
+## 10. Manual Deployment Alternative
+
+For scenarios where you need to deploy manually—such as for testing, rollbacks from a backup, or if CI/CD is unavailable—a separate manual deployment script and guide are provided. This process involves uploading a `.zip` file of the built application and running a script on the server.
+
+### [➡️ View the Local/Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)

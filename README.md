@@ -56,18 +56,20 @@ To run this application on your local machine:
 
 ## 🌐 Deployment
 
-The heart of this project is its deployment process. A complete, production-ready guide is available to set up your own server and CI/CD pipeline from scratch.
+The heart of this project is its deployment process. Two complete, production-ready guides are available to set up your own server and CI/CD pipeline from scratch.
 
-### [➡️ View the Full Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
+### [➡️ View the Full CI/CD Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
 
-This detailed guide covers:
+This detailed guide covers the primary, automated deployment strategy:
 1.  Secure server setup with a restricted `deployer` user.
-2.  Directory structure and permissions.
-3.  Configuring granular `sudo` access.
-4.  Setting up GitHub Secrets for SSH access.
-5.  A breakdown of the GitHub Actions workflow file.
-6.  An annotated version of the `deploy.sh` script.
-7.  Nginx configuration for serving the application.
+2.  Configuring granular `sudo` access.
+3.  Setting up GitHub Secrets for SSH access.
+4.  A breakdown of the GitHub Actions workflow file and the `deploy.sh` script.
+5.  Nginx configuration for serving the application.
+
+### [➡️ View the Local/Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
+
+This guide provides an alternative for manual deployments, perfect for testing or when CI/CD is not available.
 
 ## 📄 License
 
