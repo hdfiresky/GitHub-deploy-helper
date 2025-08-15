@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FC, PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { MARKDOWN_BASE_URL } from './config';
 
 // A custom renderer for code blocks to add styling and a copy button.
 const CodeRenderer: FC<PropsWithChildren<{ className?: string; inline?: boolean }>> = ({ className, children, inline }) => {
@@ -181,7 +182,7 @@ const App: React.FC = () => {
         {view === 'home' ? (
           <HomeView onShowGuide={(guide) => setView(guide)} />
         ) : (
-          <GuideView onGoBack={() => setView('home')} guidePath={`${import.meta.env.BASE_URL}${GuideMap[view]}`} />
+          <GuideView onGoBack={() => setView('home')} guidePath={`${MARKDOWN_BASE_URL}${GuideMap[view]}`} />
         )}
       </div>
     </div>
