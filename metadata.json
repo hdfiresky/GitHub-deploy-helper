@@ -1,0 +1,5 @@
+{
+  "name": "Problem Buddy Deployment Helper",
+  "description": "A Vite web app with a GitHub Action to demonstrate an automated deployment strategy to a VM using timestamped releases and symbolic links.",
+  "requestFramePermissions": []
+}
