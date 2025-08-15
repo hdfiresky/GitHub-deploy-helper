@@ -56,20 +56,19 @@ To run this application on your local machine:
 
 ## 🌐 Deployment
 
-The heart of this project is its deployment process. Two complete, production-ready guides are available to set up your own server and CI/CD pipeline from scratch.
+The heart of this project is its deployment process. Three complete, production-ready guides are available to set up your own server and CI/CD pipeline from scratch.
 
 ### [➡️ View the Full CI/CD Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
 
-This detailed guide covers the primary, automated deployment strategy:
-1.  Secure server setup with a restricted `deployer` user.
-2.  Configuring granular `sudo` access.
-3.  Setting up GitHub Secrets for SSH access.
-4.  A breakdown of the GitHub Actions workflow file and the `deploy.sh` script.
-5.  Nginx configuration for serving the application.
+This detailed guide covers the primary, automated deployment strategy using GitHub Actions. It is the recommended approach for production environments.
 
-### [➡️ View the Local/Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
+### [➡️ View the One-Click Local Deployment Guide (AUTOMATED_LOCAL_DEPLOYMENT.md)](AUTOMATED_LOCAL_DEPLOYMENT.md)
 
-This guide provides an alternative for manual deployments, perfect for testing or when CI/CD is not available.
+**The easiest way to deploy from your local machine.** This guide provides scripts for Windows, macOS, and Linux that automate the entire build, upload, and deployment process into a single command.
+
+### [➡️ View the Step-by-Step Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
+
+This guide provides the original, step-by-step process for deploying a pre-packaged `.zip` file. This is useful for understanding the process or if you cannot use the automated scripts.
 
 ## 📄 License
 

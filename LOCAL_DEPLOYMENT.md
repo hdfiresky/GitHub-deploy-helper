@@ -1,6 +1,8 @@
-# Local/Manual Deployment Guide
+# Step-by-Step Manual Deployment Guide
 
-This guide provides an alternative deployment method for scenarios where you need to deploy a pre-built application package manually, without relying on the GitHub Actions CI/CD pipeline. This is useful for testing, emergency rollbacks from a backup, or when CI/CD is unavailable.
+This guide provides the original, step-by-step manual deployment method for scenarios where you need to deploy a pre-built application package without using automated scripts. This is useful for understanding the underlying process, for testing, or when CI/CD is unavailable.
+
+> **Note:** For a much faster and more convenient local deployment, see the **[One-Click Local Deployment Guide](AUTOMATED_LOCAL_DEPLOYMENT.md)**, which automates these steps into a single command.
 
 ## Overview
 
@@ -8,7 +10,7 @@ The process involves:
 1.  Building your application locally to generate the static assets.
 2.  Compressing the build output into a `temp.zip` file.
 3.  Uploading `temp.zip` to the server.
-4.  Running a script on the server that prompts for an application name, creates a new timestamped release, extracts the files, and updates the symbolic link.
+4.  Running a script on the server that takes an application name, creates a new timestamped release, extracts the files, and updates the symbolic link.
 
 ---
 
@@ -72,7 +74,7 @@ sudo nano /usr/local/bin/local_deploy.sh
 
 ### Step 4.2: Add Script Content
 
-Copy the entire Bash script below and paste it into the `nano` editor.
+Copy the entire Bash script below and paste it into the `nano` editor. **Note:** This script now takes the application name as a command-line argument.
 
 ```bash
 #!/bin/bash
@@ -87,12 +89,19 @@ DEPLOY_USER="deployer"
 # --- VALIDATION ---
 # This script must be run via sudo from a regular user's session.
 if [ -z "$SUDO_USER" ] || [ "$EUID" -ne 0 ]; then
-  echo "Error: This script must be run with sudo (e.g., 'sudo /usr/local/bin/local_deploy.sh')."
+  echo "Error: This script must be run with sudo."
+  exit 1
+fi
+
+# The application name is now the first command-line argument.
+APP_NAME="$1"
+if [ -z "$APP_NAME" ]; then
+  echo "Error: Application name not provided as an argument."
+  echo "Usage: sudo /usr/local/bin/local_deploy.sh <app-name>"
   exit 1
 fi
 
 ZIP_FILE="/home/$SUDO_USER/temp.zip"
-
 if [ ! -f "$ZIP_FILE" ]; then
   echo "Error: Deployment package '$ZIP_FILE' not found."
   echo "Please upload your built application as 'temp.zip' to your home directory first."
@@ -101,14 +110,6 @@ fi
 # --- END VALIDATION ---
 
 # --- SCRIPT LOGIC ---
-# Prompt the user for the application name to be used in the symlink.
-read -p "Enter the application name for the symlink (e.g., problem-buddy-app): " APP_NAME
-
-if [ -z "$APP_NAME" ]; then
-  echo "Error: Application name cannot be empty."
-  exit 1
-fi
-
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 RELEASE_PATH="$RELEASES_DIR/$TIMESTAMP"
 APP_PATH="$APP_ROOT/$APP_NAME"
@@ -140,7 +141,6 @@ rm "$ZIP_FILE"
 
 echo "✅ Deployment successful! '$APP_NAME' is now live at $APP_PATH."
 # --- END SCRIPT LOGIC ---
-
 ```
 Save and close the file (`Ctrl+X`, `Y`, `Enter`).
 
@@ -156,15 +156,11 @@ sudo chown root:root /usr/local/bin/local_deploy.sh
 
 ## 5. Running the Deployment
 
-With `temp.zip` uploaded and the script in place, you can now run the deployment. Because the script is in `/usr/local/bin`, a standard location for executables, you don't need to type the full path.
+With `temp.zip` uploaded and the script in place, you can now run the deployment by providing the app name as an argument.
 
 ```bash
-# Run the script with sudo
-sudo local_deploy.sh
-
-# The script will prompt you for the application name.
-# For this project, you would enter: problem-buddy-app
-Enter the application name for the symlink (e.g., problem-buddy-app): problem-buddy-app
+# Run the script with sudo and pass the application name
+sudo local_deploy.sh problem-buddy-app
 ```
 
 The script will handle the rest. Your application will be deployed and live, and the `temp.zip` file will be removed.
@@ -173,7 +169,7 @@ The script will handle the rest. Your application will be deployed and live, and
 
 ## 6. Simplifying the Command (Optional)
 
-To make running the deployment even easier, you can create a shell alias. This allows you to type a short command like `local_deploy` instead of `sudo local_deploy.sh`.
+To make running the deployment even easier, you can create a shell alias.
 
 ### Create a Bash Alias
 
@@ -182,9 +178,9 @@ To make running the deployment even easier, you can create a shell alias. This a
     nano ~/.bashrc
     ```
 
-2.  Add the following line to the end of the file:
+2.  Add the following line to the end of the file, including the application name:
     ```bash
-    alias local_deploy='sudo /usr/local/bin/local_deploy.sh'
+    alias local_deploy='sudo /usr/local/bin/local_deploy.sh problem-buddy-app'
     ```
 
 3.  Save the file (`Ctrl+X`, `Y`, `Enter`) and apply the changes to your current shell session:

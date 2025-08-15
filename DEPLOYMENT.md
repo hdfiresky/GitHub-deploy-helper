@@ -359,6 +359,10 @@ The rollback is instant. Users will immediately be served the files from the old
 
 ## 10. Manual Deployment Alternative
 
-For scenarios where you need to deploy manually—such as for testing, rollbacks from a backup, or if CI/CD is unavailable—a separate manual deployment script and guide are provided. This process involves uploading a `.zip` file of the built application and running a script on the server.
+For scenarios where you need to deploy manually, several guides are available depending on your needs.
 
-### [➡️ View the Local/Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
+### [➡️ One-Click Local Deployment Guide (AUTOMATED_LOCAL_DEPLOYMENT.md)](AUTOMATED_LOCAL_DEPLOYMENT.md)
+**Recommended for local deploys.** This guide provides scripts for Windows, macOS, and Linux that automate the entire build, upload, and deployment process with a single command from your local machine.
+
+### [➡️ Step-by-Step Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
+This guide provides the original, step-by-step process for deploying a pre-packaged `.zip` file. This is useful for understanding the process or if you cannot use the automated scripts.
