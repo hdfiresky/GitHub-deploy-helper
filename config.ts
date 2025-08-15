@@ -7,4 +7,4 @@
  *
  * Example: https://raw.githubusercontent.com/google/generative-ai-docs/main/
  */
-export const MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/your-username/your-repo-name/main/';
+export const MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/hdfiresky/GitHub-deploy-helper/refs/heads/main/';
