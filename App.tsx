@@ -88,7 +88,7 @@ const GuideView: FC<{ onGoBack: () => void; guidePath: string }> = ({ onGoBack, 
 };
 
 // Component for the main landing page view.
-const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onShowAutomatedLocalGuide: () => void; onShowUniversalGuide: () => void; }> = ({ onShowGuide, onShowLocalGuide, onShowAutomatedLocalGuide, onShowUniversalGuide }) => (
+const HomeView: FC<{ onShowGuide: (guide: 'ci_cd' | 'server_side' | 'windows') => void }> = ({ onShowGuide }) => (
   <>
     <header className="text-center mb-8">
       <h1 className="text-4xl font-bold text-cyan-400">Problem Buddy Deployment Demo</h1>
@@ -96,81 +96,64 @@ const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onSh
     </header>
 
     <main>
-      <div className="bg-cyan-900/50 p-6 rounded-lg border border-cyan-700 mb-8 text-center">
-        <h2 className="text-2xl font-semibold text-cyan-300 mb-3">Automated CI/CD Deployment</h2>
-        <p className="text-gray-300 mb-4">
-          The primary, recommended strategy. View the step-by-step guide for a seamless, automated setup on your server.
-        </p>
-        <button
-          onClick={onShowGuide}
-          className="inline-block bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-cyan-600 transition-colors duration-300 shadow-lg"
-        >
-          View Automated CI/CD Guide
-        </button>
-      </div>
-      
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
-        <div className="bg-green-900/50 p-6 rounded-lg border border-green-700 text-center flex flex-col">
-          <h2 className="text-2xl font-semibold text-green-300 mb-3">One-Click Local Deployment</h2>
-          <p className="text-gray-300 mb-4 flex-grow">
-            A simple script inside your project for fast, automated deployments from your local machine.
+      <div className="space-y-8">
+        {/* CI/CD Guide */}
+        <div className="bg-cyan-900/50 p-6 rounded-lg border border-cyan-700 text-center">
+          <h2 className="text-2xl font-semibold text-cyan-300 mb-3">1. Automated CI/CD Deployment</h2>
+          <p className="text-gray-300 mb-4 max-w-2xl mx-auto">
+            The primary, recommended strategy. A step-by-step guide for setting up a seamless, fully automated deployment pipeline using GitHub Actions.
           </p>
           <button
-            onClick={onShowAutomatedLocalGuide}
-            className="inline-block bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-lg mt-auto"
+            onClick={() => onShowGuide('ci_cd')}
+            className="inline-block bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-cyan-600 transition-colors duration-300 shadow-lg"
           >
-            View Project Script Guide
+            View CI/CD Guide
           </button>
         </div>
-        <div className="bg-purple-900/50 p-6 rounded-lg border border-purple-700 text-center flex flex-col">
-          <h2 className="text-2xl font-semibold text-purple-300 mb-3">Universal Deployment Script</h2>
-          <p className="text-gray-300 mb-4 flex-grow">
-            An advanced script you can run from anywhere to deploy any pre-built project.
-          </p>
-          <button
-            onClick={onShowUniversalGuide}
-            className="inline-block bg-purple-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-purple-600 transition-colors duration-300 shadow-lg mt-auto"
-          >
-            View Universal Script Guide
-          </button>
+        
+        {/* Local/Manual Deployment Guides */}
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-500 text-center flex flex-col">
+            <h2 className="text-2xl font-semibold text-yellow-300 mb-3">2. Server-Side Deployment</h2>
+            <p className="text-gray-300 mb-4 flex-grow">
+              For deploying from your VM. This guide shows how to install a script on your server to handle deployments of pre-uploaded `.zip` packages.
+            </p>
+            <button
+              onClick={() => onShowGuide('server_side')}
+              className="inline-block bg-yellow-500 text-black font-bold py-2 px-6 rounded-lg hover:bg-yellow-600 transition-colors duration-300 shadow-lg mt-auto"
+            >
+              View Server Script Guide
+            </button>
+          </div>
+          <div className="bg-green-900/50 p-6 rounded-lg border border-green-700 text-center flex flex-col">
+            <h2 className="text-2xl font-semibold text-green-300 mb-3">3. One-Click Windows Deployment</h2>
+            <p className="text-gray-300 mb-4 flex-grow">
+              For Windows users. A powerful script to deploy any project from your local machine with a single command. It automates zipping, uploading, and deploying.
+            </p>
+            <button
+              onClick={() => onShowGuide('windows')}
+              className="inline-block bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-lg mt-auto"
+            >
+              View Windows Script Guide
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-500 text-center">
-        <h2 className="text-2xl font-semibold text-yellow-300 mb-3">Step-by-Step Manual Deployment</h2>
-        <p className="text-gray-300 mb-4">
-          Need to deploy without a script? Follow the original guide for performing a manual deployment step-by-step.
-        </p>
-        <button
-          onClick={onShowLocalGuide}
-          className="inline-block bg-yellow-500 text-black font-bold py-2 px-6 rounded-lg hover:bg-yellow-600 transition-colors duration-300 shadow-lg"
-        >
-          View Step-by-Step Guide
-        </button>
       </div>
 
       <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-600 mt-8">
-        <h2 className="text-2xl font-semibold text-green-400 mb-4">Deployment Strategy Overview</h2>
+        <h2 className="text-2xl font-semibold text-green-400 mb-4">Core Deployment Strategy</h2>
         <p className="text-gray-300 mb-4">
-          This application is configured to be deployed automatically using a GitHub Action. The process ensures zero-downtime deployments through a symbolic link strategy.
+          All deployment methods use the same zero-downtime strategy on the server, which relies on atomic symbolic link switching.
         </p>
         <ol className="list-decimal list-inside space-y-3 text-gray-300">
           <li>
-            <span className="font-semibold text-gray-100">Trigger:</span> A push to the <code className="bg-gray-700 text-yellow-300 px-2 py-1 rounded">main</code> branch triggers the GitHub Action workflow.
+            <span className="font-semibold text-gray-100">New Release Folder:</span> A new timestamped directory is created in the `/var/www/releases` folder.
           </li>
           <li>
-            <span className="font-semibold text-gray-100">Build:</span> The action builds the app, generating static assets in the <code className="bg-gray-700 text-yellow-300 px-2 py-1 rounded">dist</code> folder.
+            <span className="font-semibold text-gray-100">Transfer Files:</span> The new build assets are placed into this new directory.
           </li>
           <li>
-            <span className="font-semibold text-gray-100">Transfer:</span> The <code className="bg-gray-700 text-yellow-300 px-2 py-1 rounded">dist</code> folder and deployment script are copied to the VM.
-          </li>
-          <li>
-            <span className="font-semibold text-gray-100">Execute:</span> The deployment script runs on the VM:
-            <ul className="list-disc list-inside ml-6 mt-2 space-y-2 text-gray-400">
-              <li>Creates a new timestamped release directory.</li>
-              <li>Moves the new build assets into this new directory.</li>
-              <li>Updates the symbolic link to point to the new release.</li>
-            </ul>
+            <span className="font-semibold text-gray-100">Activate Release:</span> A symbolic link (e.g., `/var/www/problembuddy/problem-buddy-app`) is atomically updated to point to the new release directory.
           </li>
         </ol>
       </div>
@@ -181,26 +164,22 @@ const HomeView: FC<{ onShowGuide: () => void; onShowLocalGuide: () => void; onSh
   </>
 );
 
-const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'guide' | 'local_guide' | 'automated_local_guide' | 'universal_guide'>('home');
+type View = 'home' | 'ci_cd' | 'server_side' | 'windows';
 
-  const GuideMap = {
-    guide: 'DEPLOYMENT.md',
-    local_guide: 'LOCAL_DEPLOYMENT.md',
-    automated_local_guide: 'AUTOMATED_LOCAL_DEPLOYMENT.md',
-    universal_guide: 'UNIVERSAL_DEPLOYMENT_SCRIPT.md',
+const App: React.FC = () => {
+  const [view, setView] = useState<View>('home');
+
+  const GuideMap: Record<Exclude<View, 'home'>, string> = {
+    ci_cd: 'DEPLOYMENT.md',
+    server_side: 'LOCAL_DEPLOYMENT.md',
+    windows: 'AUTOMATED_LOCAL_DEPLOYMENT.md',
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center p-4 font-sans">
       <div className="max-w-4xl w-full bg-gray-800 rounded-lg shadow-xl p-8 my-8 border border-gray-700">
         {view === 'home' ? (
-          <HomeView 
-            onShowGuide={() => setView('guide')} 
-            onShowLocalGuide={() => setView('local_guide')}
-            onShowAutomatedLocalGuide={() => setView('automated_local_guide')}
-            onShowUniversalGuide={() => setView('universal_guide')}
-          />
+          <HomeView onShowGuide={(guide) => setView(guide)} />
         ) : (
           <GuideView onGoBack={() => setView('home')} guidePath={`${import.meta.env.BASE_URL}${GuideMap[view]}`} />
         )}

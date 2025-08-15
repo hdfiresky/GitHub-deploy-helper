@@ -56,23 +56,19 @@ To run this application on your local machine:
 
 ## 🌐 Deployment
 
-The heart of this project is its deployment process. Several complete, production-ready guides are available to set up your own server and CI/CD pipeline from scratch.
+The heart of this project is its deployment process. Three complete, production-ready guides are available to set up your own server and deployment pipeline from scratch. Choose the method that best fits your workflow.
 
-### [➡️ View the Full CI/CD Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
+### 1. [➡️ Automated CI/CD Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
 
-This detailed guide covers the primary, automated deployment strategy using GitHub Actions. It is the recommended approach for production environments.
+This is the primary, recommended strategy using GitHub Actions for a fully automated, hands-off deployment pipeline.
 
-### [➡️ View the Universal Deployment Script Guide (UNIVERSAL_DEPLOYMENT_SCRIPT.md)](UNIVERSAL_DEPLOYMENT_SCRIPT.md)
+### 2. [➡️ Server-Side Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
 
-**Advanced:** Provides a powerful script for Windows and macOS/Linux that you can add to your system's PATH and run from anywhere to deploy any pre-built project.
+This guide shows how to install and use a script directly on your server to deploy a pre-uploaded application package. It is the foundation for manual deployments.
 
-### [➡️ View the One-Click Local Deployment Guide (AUTOMATED_LOCAL_DEPLOYMENT.md)](AUTOMATED_LOCAL_DEPLOYMENT.md)
+### 3. [➡️ One-Click Windows Deployment Guide (AUTOMATED_LOCAL_DEPLOYMENT.md)](AUTOMATED_LOCAL_DEPLOYMENT.md)
 
-A simple script that lives inside your project for fast, automated deployments from your local machine.
-
-### [➡️ View the Step-by-Step Manual Deployment Guide (LOCAL_DEPLOYMENT.md)](LOCAL_DEPLOYMENT.md)
-
-This guide provides the original, step-by-step process for deploying a pre-packaged `.zip` file. This is useful for understanding the process or if you cannot use the automated scripts.
+This guide provides a powerful script for Windows users to automate the entire deployment process from their local machine with a single command.
 
 ## 📄 License
 

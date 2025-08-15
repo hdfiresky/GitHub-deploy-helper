@@ -1,68 +1,32 @@
-# Step-by-Step Manual Deployment Guide
+# Server-Side Deployment Script Guide
 
-This guide provides the original, step-by-step manual deployment method for scenarios where you need to deploy a pre-built application package without using automated scripts. This is useful for understanding the underlying process, for testing, or when CI/CD is unavailable.
+This guide explains how to set up and use a deployment script directly on your server (VM). This script is the core component for handling manual deployments of pre-packaged applications.
 
-> **Note:** For a much faster and more convenient local deployment, see the **[One-Click Local Deployment Guide](AUTOMATED_LOCAL_DEPLOYMENT.md)**, which automates these steps into a single command.
+This script is a prerequisite for the **[One-Click Windows Deployment Guide](AUTOMATED_LOCAL_DEPLOYMENT.md)**, as the Windows script calls this server-side script to perform the final deployment steps.
 
 ## Overview
 
 The process involves:
-1.  Building your application locally to generate the static assets.
-2.  Compressing the build output into a `temp.zip` file.
-3.  Uploading `temp.zip` to the server.
-4.  Running a script on the server that takes an application name, creates a new timestamped release, extracts the files, and updates the symbolic link.
+1.  Creating a robust `local_deploy.sh` script on your server.
+2.  Making the script executable from anywhere by placing it in `/usr/local/bin`.
+3.  Using this script to deploy a `temp.zip` file that you have uploaded to your server's home directory.
 
 ---
 
 ## 1. Prerequisites
 
 -   You must have completed the initial **Server Setup** from the main [DEPLOYMENT.md guide](DEPLOYMENT.md), including the creation of the `deployer` user and the required directory structure (`/var/www/releases`, `/var/www/problembuddy`).
--   You need `zip` and `unzip` installed on your server (`sudo apt-get install zip unzip`).
+-   You need `unzip` installed on your server (`sudo apt-get install unzip`).
 
 ---
 
-## 2. Local Preparation
-
-First, build your application and package it for deployment.
-
-```bash
-# 1. Build the application
-npm run build
-
-# 2. Navigate into the build output directory
-# The directory name is 'dist' by default for Vite projects.
-cd dist
-
-# 3. Zip the contents of the directory
-# The '.*' ensures hidden files are included.
-zip -r ../temp.zip . .*
-
-# 4. Navigate back to the project root
-cd ..
-```
-
-You should now have a `temp.zip` file in your project's root directory.
-
----
-
-## 3. Upload to Server
-
-Upload the `temp.zip` file to your home directory on the server. Replace `user` and `your_server_ip` with your credentials.
-
-```bash
-# Use scp to copy the zip file to your user's home directory
-scp temp.zip user@your_server_ip:~/
-```
-
----
-
-## 4. Server Script Setup (One-Time)
+## 2. Server Script Setup (One-Time)
 
 You need to create the `local_deploy.sh` script on your server. This only needs to be done once.
 
-### Step 4.1: Create the Script File
+### Step 2.1: Create the Script File
 
-SSH into your server and create the following file.
+SSH into your server with a user that has `sudo` privileges and create the following file.
 
 ```bash
 # SSH into your server
@@ -72,9 +36,9 @@ ssh user@your_server_ip
 sudo nano /usr/local/bin/local_deploy.sh
 ```
 
-### Step 4.2: Add Script Content
+### Step 2.2: Add Script Content
 
-Copy the entire Bash script below and paste it into the `nano` editor. **Note:** This script now takes the application name as a command-line argument.
+Copy the entire Bash script below and paste it into the `nano` editor. This script takes the application name as a command-line argument and deploys a `temp.zip` file from the user's home directory.
 
 ```bash
 #!/bin/bash
@@ -93,11 +57,11 @@ if [ -z "$SUDO_USER" ] || [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# The application name is now the first command-line argument.
+# The application name is the first command-line argument.
 APP_NAME="$1"
 if [ -z "$APP_NAME" ]; then
   echo "Error: Application name not provided as an argument."
-  echo "Usage: sudo /usr/local/bin/local_deploy.sh <app-name>"
+  echo "Usage: sudo local_deploy.sh <app-name>"
   exit 1
 fi
 
@@ -144,9 +108,9 @@ echo "✅ Deployment successful! '$APP_NAME' is now live at $APP_PATH."
 ```
 Save and close the file (`Ctrl+X`, `Y`, `Enter`).
 
-### Step 4.3: Set Permissions
+### Step 2.3: Set Permissions
 
-Make the script executable and owned by `root`.
+Make the script executable and ensure it's owned by `root`.
 ```bash
 sudo chmod +x /usr/local/bin/local_deploy.sh
 sudo chown root:root /usr/local/bin/local_deploy.sh
@@ -154,42 +118,37 @@ sudo chown root:root /usr/local/bin/local_deploy.sh
 
 ---
 
-## 5. Running the Deployment
+## 3. How to Use the Script
 
-With `temp.zip` uploaded and the script in place, you can now run the deployment by providing the app name as an argument.
+To use this script, you first need to upload your packaged application to the server.
+
+### Step 3.1: Package and Upload (From Your Local Machine)
+
+On your local machine, build and zip your application.
 
 ```bash
+# 1. Build the application
+npm run build
+
+# 2. Zip the contents of the 'dist' directory
+# On Windows, you can right-click the 'dist' folder and send to a compressed file.
+# On macOS/Linux:
+(cd dist && zip -r ../temp.zip .)
+
+# 3. Upload the zip file to your server
+scp temp.zip user@your_server_ip:~/
+```
+
+### Step 3.2: Run the Deployment (On the Server)
+
+Now, SSH into your server and run the script, providing the application name that Nginx is configured to use.
+
+```bash
+# SSH into your server
+ssh user@your_server_ip
+
 # Run the script with sudo and pass the application name
 sudo local_deploy.sh problem-buddy-app
 ```
 
-The script will handle the rest. Your application will be deployed and live, and the `temp.zip` file will be removed.
-
----
-
-## 6. Simplifying the Command (Optional)
-
-To make running the deployment even easier, you can create a shell alias.
-
-### Create a Bash Alias
-
-1.  Open your Bash configuration file. This is usually `~/.bashrc` or `~/.bash_aliases`.
-    ```bash
-    nano ~/.bashrc
-    ```
-
-2.  Add the following line to the end of the file, including the application name:
-    ```bash
-    alias local_deploy='sudo /usr/local/bin/local_deploy.sh problem-buddy-app'
-    ```
-
-3.  Save the file (`Ctrl+X`, `Y`, `Enter`) and apply the changes to your current shell session:
-    ```bash
-    source ~/.bashrc
-    ```
-
-Now, you can deploy simply by running:
-```bash
-local_deploy
-```
-The alias will be available in all future terminal sessions.
+The script will handle the rest. Your application will be deployed and live, and the `temp.zip` file will be removed automatically.
