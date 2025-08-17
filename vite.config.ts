@@ -26,8 +26,8 @@ export default defineConfig(({ mode }) => {
           "pwa-512x512.png",
         ],
         manifest: {
-          name: "Asset generator",
-          short_name: "AssetGen",
+          name: "Deploy Helper",
+          short_name: "Deploy Helper",
           start_url: "/deploy-helper/",
           scope: "/deploy-helper/",
           display: "standalone",
